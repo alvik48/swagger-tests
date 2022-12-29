@@ -6,6 +6,11 @@ type TUser = {
   name: string
 };
 
+const TUserJoi = Joi.object({
+  id: Joi.number().integer().positive().required(),
+  name: Joi.string().required()
+});
+
 const Users: TUser[] = [{ id: 1, name: 'Alex' }, { id: 2, name: 'Not Alex' }];
 
 export default [
@@ -23,6 +28,9 @@ export default [
         orderBy: Joi.string().valid('id', 'name').description('Field to order by'),
         order: Joi.string().valid('asc', 'desc').description('Order direction')
       })
+    },
+    response: {
+      schema: Joi.array().items(TUserJoi)
     }
   }],
 
@@ -36,6 +44,9 @@ export default [
       params: Joi.object({
         id: Joi.number().integer().positive().description('User id').required()
       })
+    },
+    response: {
+      schema: TUserJoi
     }
   }],
 
@@ -55,6 +66,11 @@ export default [
     validate: {
       payload: Joi.object({
         name: Joi.string().description('User name').required()
+      })
+    },
+    response: {
+      schema: Joi.object({
+        status: Joi.string().valid('OK')
       })
     }
   }]
