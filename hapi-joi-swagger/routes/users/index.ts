@@ -55,17 +55,19 @@ export default [
     tags: ['api', 'users'],
     handler(r: Request, h: ResponseToolkit) {
       const data = r.payload as TUser;
-
-      Users.push({
+      const newUser: TUser = {
         id: Users.length,
         name: String(data.name)
-      });
+      };
 
-      return h.response({ status: 'OK' });
+      Users.push(newUser);
+
+      return h.response({ status: 'OK', data: newUser });
     },
     validate: {
       payload: Joi.object({
-        name: Joi.string().description('User name').required()
+        name: Joi.string().description('User name').required(),
+        data: TUserJoi
       })
     },
     response: {

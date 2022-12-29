@@ -2,32 +2,52 @@ import Joi from 'joi'
 import express from 'express'
 const app = express();
 
+type TUser = {
+  id: number,
+  name: string
+};
+
+const TUserJoi = Joi.object({
+  id: Joi.number().integer().positive().required(),
+  name: Joi.string().required()
+});
+
+const Users: TUser[] = [{ id: 1, name: 'Alex' }, { id: 2, name: 'Not Alex' }];
+
 /**
  * @swagger
  * /users:
- *   post:
- *     summary: Creates a new user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/definitions/User'
+ *   get:
+ *     summary: Get users list
+ *     parameters:
+ *      - name: take
+ *        in: query
+ *        schema:
+ *          type: number
+ *      - name: skip
+ *        in: query
+ *        schema:
+ *          type: number
+ *      - name: orderBy
+ *        in: query
+ *        schema:
+ *          type: string
+ *      - name: order
+ *        in: query
+ *        schema:
+ *          type: string
  *     responses:
- *       201:
- *         description: The created user
- *
+ *       200:
+ *         description: Users list
  */
 
 app.get('/users', (req, res) => {
-
+  res.send(JSON.stringify(Users));
 });
 
 app.post('/users', (req, res) => {
   const schema = Joi.object().keys({
-    name: Joi.string().alphanum().min(3).max(30).required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
-    email: Joi.string().email({ minDomainSegments: 2 }),
+    name: Joi.string().alphanum().min(3).max(30).required()
   });
 
   const { error } = schema.validate(req.body);
@@ -37,6 +57,16 @@ app.post('/users', (req, res) => {
     return;
   }
 
+  const newUser: TUser = {
+    id: Users.length,
+    name: String(req.body.name)
+  };
+
+  Users.push(newUser);
+
   // create user in database
-  res.send('User created successfully');
+  res.send(JSON.stringify({
+    status: 'OK',
+    data: newUser
+  }));
 });

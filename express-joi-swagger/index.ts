@@ -2,13 +2,12 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerOptions from './swagger';
-import { ObjectSchema } from 'joi';
 
 const app = express();
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // other middleware and routes go here
 
