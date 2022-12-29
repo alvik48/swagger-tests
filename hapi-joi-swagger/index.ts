@@ -24,30 +24,32 @@ const server: Hapi.Server = new Hapi.Server({
 
 (async (): Promise<void> => {
   await server.register([
-    Inert,
-    Vision,
+    { plugin: Inert },
+    { plugin: Vision },
     {
       plugin: HapiSwagger,
-      info: {
-        title: `API documentation`,
-        version: Package.version
-      },
-      grouping: 'tags',
-      auth: false,
-      securityDefinitions: {
-        bearer: {
-          type: 'apiKey',
-          name: 'Authorization',
-          in: 'header'
-        }
-      },
+      options: {
+        info: {
+          title: `API documentation`,
+          version: Package.version
+        },
+        grouping: 'tags',
+        auth: false,
+        securityDefinitions: {
+          bearer: {
+            type: 'apiKey',
+            name: 'Authorization',
+            in: 'header'
+          }
+        },
+      }
     }
   ]);
 
   server.route(routes);
 
   server.events.on('response', ({info, method, path, response }: Hapi.Request) => {
-    console.info(`[${info.remoteAddress}] ${method.toUpperCase()}: ${path} --> ${response.statusCode}`);
+    console.info(`[${info.remoteAddress}] ${method.toUpperCase()}: ${path} --> ${(response as Hapi.ResponseObject).statusCode}`);
   });
 
   await server.start();

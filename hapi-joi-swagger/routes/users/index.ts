@@ -17,12 +17,12 @@ export default [
       return h.response(Users);
     },
     validate: {
-      query: {
+      query: Joi.object({
         take: Joi.number().integer().positive().max(1000).default(100).description('How much users to return'),
         skip: Joi.number().integer().min(0).default(0).description('How much users to skip (for pagination)'),
         orderBy: Joi.string().valid('id', 'name').description('Field to order by'),
         order: Joi.string().valid('asc', 'desc').description('Order direction')
-      }
+      })
     }
   }],
 
@@ -33,9 +33,9 @@ export default [
       return h.response(Users[r.params.id]);
     },
     validate: {
-      params: {
+      params: Joi.object({
         id: Joi.number().integer().positive().description('User id').required()
-      }
+      })
     }
   }],
 
@@ -53,9 +53,9 @@ export default [
       return h.response({ status: 'OK' });
     },
     validate: {
-      payload: {
+      payload: Joi.object({
         name: Joi.string().description('User name').required()
-      }
+      })
     }
   }]
 ];
